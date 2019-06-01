@@ -31,7 +31,6 @@ const serverHandle = (req, res) => {
         postData += chunk.toString();
       })
       req.on('end', () => {
-        console.log('end')
         if(!postData) {
           resolve({})
           return
@@ -48,16 +47,25 @@ const serverHandle = (req, res) => {
   // 处理postData 
 
   getPostData(req).then(postData => {
-    console.log('postData', postData)
     // 如果符合postdata的条件，postData就有值，否则就没有值
     req.body = postData
 
     // 处理blog 路由
-    const blogDate = handleBlogRouter(req, res);
-    if(blogDate) {
-      res.end(
-        JSON.stringify(blogDate)
-      )
+    // const blogDate = handleBlogRouter(req, res);
+    // if(blogDate) {
+    //   res.end(
+    //     JSON.stringify(blogDate)
+    //   )
+    //   return;
+    // }
+    
+    const blogResult = handleBlogRouter(req, res);
+    if (blogResult) {
+      blogResult.then(blogData => {
+        res.end(
+          JSON.stringify(blogData)
+        )
+      })
       return;
     }
 
